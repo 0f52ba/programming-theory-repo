@@ -50,7 +50,7 @@ public class SelectCarUISettings : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    public void SelectCar()
+    public void StartRace()
     {
         SelectCarManager.isCarSelected = true;
     }

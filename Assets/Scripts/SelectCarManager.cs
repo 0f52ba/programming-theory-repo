@@ -24,6 +24,14 @@ public class SelectCarManager : MonoBehaviour
         StartCoroutine(RotatePlatform());
     }
 
+    private void Update()
+    {
+        if(isCarSelected)
+        {
+            StopCoroutine(RotatePlatform());
+        }
+    }
+
     private void InitCars()
     {
         availableCars = availableCarsUser;
