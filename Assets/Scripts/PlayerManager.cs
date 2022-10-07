@@ -1,34 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance;
 
-    public GameObject selectedCar;
+    public PlayerData selectedCarData;
+    public string selectedCarType = CarType.Eclipse;
 
     private void Awake()
     {
         if (Instance != null)
         {
-            Destroy(Instance);
+            Destroy(this.gameObject);
             return;
         }
 
-        DontDestroyOnLoad(gameObject);
-
-        InitData();
-    }
-
-    private void InitData()
-    {
         Instance = this;
-    }
 
-    public void SaveSelectedCar()
-    {
-        selectedCar = SelectCarManager.currentCar;
+        DontDestroyOnLoad(this.gameObject);
     }
 
     [System.Serializable]

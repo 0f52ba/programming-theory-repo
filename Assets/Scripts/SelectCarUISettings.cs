@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static PlayerManager;
 
 public class SelectCarUISettings : MonoBehaviour
 {
@@ -14,103 +15,40 @@ public class SelectCarUISettings : MonoBehaviour
         selectCarManager = GameObject.Find("SelectCarManager").GetComponent<SelectCarManager>();
     }
 
-    public void SelectFirstColor()
+    private GameObject LoadSelectedCar(int colorId, string tag)
     {
-        var currentCar = SelectCarManager.currentCar;
-        currentCar.SetActive(false);
-
-        switch (SelectCarManager.currentCar.tag)
+        switch (tag)
         {
-            case "Eclipse":
-                currentCar = GameObject.Find("/Cars/Eclipse/EclipseBlue");
-                break;
-            case "Lotus":
-                currentCar = GameObject.Find("/Cars/Lotus/LotusBlue");
-                break;
-            case "Shadow":
-                currentCar = GameObject.Find("/Cars/Shadow/ShadowBlue");
-                break;
+            case CarType.Eclipse:
+                return SelectCarManager.availableEclipseCars[colorId];
+            case CarType.Lotus:
+                return SelectCarManager.availableLotusCars[colorId];
+            case CarType.Shadow:
+                return SelectCarManager.availableShadowCars[colorId];
             default:
                 Debug.Log("unknown car");
-                break;
+                return null;
         }
+    }
 
-        SelectCarManager.currentCar = currentCar;
-        currentCar.SetActive(true);
+    public void SelectFirstColor()
+    {
+        SelectColor(0);
     }
 
     public void SelectSecondColor()
     {
-        var currentCar = SelectCarManager.currentCar;
-        currentCar.SetActive(false);
-
-        switch (SelectCarManager.currentCar.tag)
-        {
-            case "Eclipse":
-                currentCar = GameObject.Find("/Cars/Eclipse/EclipseWhite");
-                break;
-            case "Lotus":
-                currentCar = GameObject.Find("/Cars/Lotus/LotusBlack");
-                break;
-            case "Shadow":
-                currentCar = GameObject.Find("/Cars/Shadow/ShadowGray");
-                break;
-            default:
-                Debug.Log("unknown car");
-                break;
-        }
-
-        SelectCarManager.currentCar = currentCar;
-        currentCar.SetActive(true);
+        SelectColor(1);
     }
 
     public void SelectThirdColor()
     {
-        var currentCar = SelectCarManager.currentCar;
-        currentCar.SetActive(false);
-
-        switch (SelectCarManager.currentCar.tag)
-        {
-            case "Eclipse":
-                currentCar = GameObject.Find("/Cars/Eclipse/EclipseBlack");
-                break;
-            case "Lotus":
-                currentCar = GameObject.Find("/Cars/Lotus/LotusGreen");
-                break;
-            case "Shadow":
-                currentCar = GameObject.Find("/Cars/Shadow/ShadowRed");
-                break;
-            default:
-                Debug.Log("unknown car");
-                break;
-        }
-
-        SelectCarManager.currentCar = currentCar;
-        currentCar.SetActive(true);
+        SelectColor(2);
     }
 
     public void SelectFourthColor()
     {
-        var currentCar = SelectCarManager.currentCar;
-        currentCar.SetActive(false);
-
-        switch (SelectCarManager.currentCar.tag)
-        {
-            case "Eclipse":
-                break;
-            case "Lotus":
-                currentCar = GameObject.Find("/Cars/Lotus/LotusYellow");
-                break;
-            case "Shadow":
-                currentCar = GameObject.Find("/Cars/Shadow/ShadowYellow");
-                break;
-            default:
-                Debug.Log("unknown car");
-                break;
-        }
-
-        SelectCarManager.currentCar = currentCar;
-        currentCar.SetActive(true);
+        SelectColor(3);
     }
 
     public void ShowNextCar()
@@ -171,10 +109,33 @@ public class SelectCarUISettings : MonoBehaviour
 
     public void StartRace()
     {
-        SelectCarManager.isCarSelected = true;
         PlayClickSound();
-        PlayerManager.Instance.SaveSelectedCar();
+
+        SelectCarManager.isCarSelected = true;
+        string carType = SelectCarManager.currentCar.tag.ToString();
+
+        PlayerManager.Instance.selectedCarType = carType;
+        PlayerManager.Instance.selectedCarData = new PlayerData { SelectedCar = SelectCarManager.currentCar };
+
+        DontDestroyOnLoad(SelectCarManager.currentCar);
+
         SceneManager.LoadScene(2);
+    }
+
+    private void SelectColor(int colorId)
+    {
+        PlayClickSound();
+
+        var currentCar = SelectCarManager.currentCar;
+        currentCar.SetActive(false);
+
+        currentCar = LoadSelectedCar(colorId, SelectCarManager.currentCar.tag);
+
+        if (currentCar != null)
+        {
+            SelectCarManager.currentCar = currentCar;
+            currentCar.SetActive(true);
+        }
     }
 
     private void PlayClickSound()

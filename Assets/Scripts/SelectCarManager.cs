@@ -4,29 +4,40 @@ using UnityEngine.UI;
 
 public class SelectCarManager : MonoBehaviour
 {
+    private static readonly string accelerationSliderPath = "/Canvas/CarSettings/AccelerationSlider";
+    private static readonly string brakeSliderPath = "/Canvas/CarSettings/BrakeSlider";
+
     public static GameObject currentCar;
     public static int currentCarId;
     public static bool isCarSelected;
+
     public static GameObject[] availableCars;
+    public static GameObject[] availableShadowCars;
+    public static GameObject[] availableLotusCars;
+    public static GameObject[] availableEclipseCars;
 
     [SerializeField] private GameObject platform;
     [SerializeField] private float rotateSeconds;
     [SerializeField] private float rotateAngle;
     [SerializeField] private GameObject[] availableCarsUser;
 
-    [SerializeField] private GameObject color1;
-    [SerializeField] private GameObject color2;
-    [SerializeField] private GameObject color3;
-    [SerializeField] private GameObject color4;
+    [SerializeField] private GameObject[] shadowCars;
+    [SerializeField] private GameObject[] lotusCars;
+    [SerializeField] private GameObject[] eclipseCars;
+
+    [SerializeField] private GameObject color1Field;
+    [SerializeField] private GameObject color2Field;
+    [SerializeField] private GameObject color3Field;
+    [SerializeField] private GameObject color4Field;
+
+    private Slider accelerationSlider;
+    private Slider brakeSlider;
 
     void Start()
     {
         InitCars();
+        LoadSceneData();
         LoadCarData();
-
-        isCarSelected = false;
-        rotateSeconds = 0.05f;
-        rotateAngle = 2.55f;
 
         StartCoroutine(RotatePlatform());
     }
@@ -36,6 +47,56 @@ public class SelectCarManager : MonoBehaviour
         if (isCarSelected)
         {
             StopCoroutine(RotatePlatform());
+        }
+    }
+
+    public void LoadCarData()
+    {
+        ICar car;
+
+        switch (currentCar.tag)
+        {
+            case CarType.Eclipse:
+                car = new Eclipse();
+
+                color1Field.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[0]);
+                color2Field.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[1]);
+                color3Field.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[2]);
+                color4Field.SetActive(false);
+
+                accelerationSlider.value = car.Acceleration;
+                brakeSlider.value = car.Brake;
+
+                break;
+            case CarType.Lotus:
+                car = new Lotus();
+
+                color1Field.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[0]);
+                color2Field.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[1]);
+                color3Field.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[2]);
+                color4Field.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[3]);
+                color4Field.SetActive(true);
+
+                accelerationSlider.value = car.Acceleration;
+                brakeSlider.value = car.Brake;
+
+                break;
+            case CarType.Shadow:
+                car = new Shadow();
+
+                color1Field.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[0]);
+                color2Field.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[1]);
+                color3Field.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[2]);
+                color4Field.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[3]);
+                color4Field.SetActive(true);
+
+                accelerationSlider.value = car.Acceleration;
+                brakeSlider.value = car.Brake;
+
+                break;
+            default:
+                Debug.Log("unknown car");
+                break;
         }
     }
 
@@ -53,45 +114,22 @@ public class SelectCarManager : MonoBehaviour
         {
             availableCars[i].SetActive(false);
         }
+
+        availableShadowCars = shadowCars;
+        availableLotusCars = lotusCars;
+        availableEclipseCars = eclipseCars;
     }
 
-    public void LoadCarData()
+    private void LoadSceneData()
     {
-        ICar car;
+        accelerationSlider = GameObject.Find(accelerationSliderPath).GetComponent<Slider>();
+        brakeSlider = GameObject.Find(brakeSliderPath).GetComponent<Slider>();
 
-        switch (currentCar.tag)
-        {
-            case "Eclipse":
-                car = new Eclipse();
-
-                color1.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[0]);
-                color2.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[1]);
-                color3.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[2]);
-                color4.SetActive(false);
-                break;
-            case "Lotus":
-                car = new Lotus();
-
-                color1.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[0]);
-                color2.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[1]);
-                color3.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[2]);
-                color4.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[3]);
-                color4.SetActive(true);
-                break;
-            case "Shadow":
-                car = new Shadow();
-
-                color1.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[0]);
-                color2.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[1]);
-                color3.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[2]);
-                color4.GetComponent<Image>().color = ConvertHexToColor(car.AvailableColors[3]);
-                color4.SetActive(true);
-                break;
-            default:
-                Debug.Log("unknown car");
-                break;
-        }
+        isCarSelected = false;
+        rotateSeconds = 0.05f;
+        rotateAngle = 2.55f;
     }
+
     private static Color ConvertHexToColor(string hex)
     {
         Color convertedColor;
@@ -116,39 +154,56 @@ public interface ICar
 {
     string[] AvailableColors { get; }
     string Color { get; set; }
-    CarType Type { get; }
-    float TopSpeed { get; }
+    string Type { get; }
     float Acceleration { get; }
+    float Brake { get; }
 }
 
 // 1202
 public class Eclipse : ICar
 {
-    string[] ICar.AvailableColors { get; } = new string[] { CarColor.Blue, CarColor.White, CarColor.Black };
+    string[] ICar.AvailableColors { get; } = new string[]
+    {
+        CarColor.Blue,
+        CarColor.White,
+        CarColor.Black
+    };
     public string Color { get; set; }
-    CarType ICar.Type { get; } = CarType.Eclipse;
-    public float TopSpeed { get; }
-    public float Acceleration { get; }
+    string ICar.Type { get; } = CarType.Eclipse;
+    public float Acceleration { get; } = 0.73f;
+    public float Brake { get; } = 0.85f;
 }
 
 // 1203
 public class Lotus : ICar
 {
-    string[] ICar.AvailableColors { get; } = new string[] { CarColor.Blue, CarColor.Black, CarColor.Green, CarColor.Yellow };
+    string[] ICar.AvailableColors { get; } = new string[]
+    {
+        CarColor.Blue,
+        CarColor.Black,
+        CarColor.Green,
+        CarColor.Yellow
+    };
     public string Color { get; set; }
-    CarType ICar.Type { get; } = CarType.Lotus;
-    public float TopSpeed { get; }
-    public float Acceleration { get; }
+    string ICar.Type { get; } = CarType.Lotus;
+    public float Acceleration { get; } = 0.63f;
+    public float Brake { get; } = 0.7f;
 }
 
 // ARCADE
 public class Shadow : ICar
 {
-    string[] ICar.AvailableColors { get; } = new string[] { CarColor.Blue, CarColor.Gray, CarColor.Red, CarColor.Yellow };
+    string[] ICar.AvailableColors { get; } = new string[]
+    {
+        CarColor.Blue,
+        CarColor.Gray,
+        CarColor.Red,
+        CarColor.Yellow
+    };
     public string Color { get; set; }
-    CarType ICar.Type { get; } = CarType.Shadow;
-    public float TopSpeed { get; }
-    public float Acceleration { get; }
+    string ICar.Type { get; } = CarType.Shadow;
+    public float Acceleration { get; } = 0.5f;
+    public float Brake { get; } = 0.63f;
 }
 
 public static class CarColor
@@ -162,9 +217,9 @@ public static class CarColor
     public static string Red = "#D10809";
 }
 
-public enum CarType
+public static class CarType
 {
-    Eclipse = 0,
-    Lotus = 1,
-    Shadow = 2
+    public const string Eclipse = "Eclipse";
+    public const string Lotus = "Lotus";
+    public const string Shadow = "Shadow";
 }
