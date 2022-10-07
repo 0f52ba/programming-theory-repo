@@ -115,7 +115,7 @@ public class SelectCarUISettings : MonoBehaviour
         string carType = SelectCarManager.currentCar.tag.ToString();
 
         PlayerManager.Instance.selectedCarType = carType;
-        PlayerManager.Instance.selectedCarData = new PlayerData { SelectedCar = SelectCarManager.currentCar };
+        PlayerManager.Instance.selectedCarData = new PlayerData { Car = SelectCarManager.currentCar };
 
         DontDestroyOnLoad(SelectCarManager.currentCar);
 
