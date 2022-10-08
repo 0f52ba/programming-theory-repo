@@ -7,6 +7,9 @@ public class RaceUISettings : MonoBehaviour
     [SerializeField] private TextMeshProUGUI lapNumberText;
     [SerializeField] private TextMeshProUGUI lapTimeMinutesText;
     [SerializeField] private TextMeshProUGUI lapTimeSecondsText;
+    [SerializeField] private TextMeshProUGUI totalTimeMinutesText;
+    [SerializeField] private TextMeshProUGUI totalTimeSecondsText;
+    [SerializeField] private TextMeshProUGUI gameOverText;
     [SerializeField] private int totalLaps;
 
     private Rigidbody carRb;
@@ -17,18 +20,30 @@ public class RaceUISettings : MonoBehaviour
         carRb = PlayerManager.Instance.selectedCarData.Car?.GetComponent<Rigidbody>();
        
         totalLaps = TimeManager.TotalLapNumber;
+
         lapNumberText.text = "0 / " + totalLaps.ToString();
         lapTimeSecondsText.text = "00";
         lapTimeMinutesText.text = "00";
-
+        totalTimeMinutesText.text = "00";
+        totalTimeSecondsText.text = "00";
         speedText.text = "0";
+        gameOverText.gameObject.SetActive(false);
+
     }
 
     private void Update()
     {
-        SetSpeed();
-        SetLapTime();
-        SetLapNumber();
+       if(TimeManager.IsGameOver == false)
+        {
+            SetSpeed();
+            SetLapTime();
+            SetLapNumber();
+            SetTotalTime();
+        }
+        else
+        {
+            GameOver();
+        }
     }
 
     private void SetSpeed()
@@ -59,8 +74,36 @@ public class RaceUISettings : MonoBehaviour
         }
     }
 
+    private void SetTotalTime()
+    {
+        if (TimeManager.TotalTimeSeconds < 10)
+        {
+            totalTimeSecondsText.text = "0" + TimeManager.TotalTimeSeconds.ToString();
+        }
+        else
+        {
+            totalTimeSecondsText.text = TimeManager.TotalTimeSeconds.ToString();
+        }
+
+        if (TimeManager.TotalTimeMinutes < 10)
+        {
+            totalTimeMinutesText.text = "0" + TimeManager.TotalTimeMinutes.ToString();
+        }
+        else
+        {
+            totalTimeMinutesText.text = TimeManager.TotalTimeMinutes.ToString();
+        }
+    }
+
     private void SetLapNumber()
     {
         lapNumberText.text = TimeManager.LapNumber.ToString() + " / " + TimeManager.TotalLapNumber.ToString();
+    }
+
+    private void GameOver()
+    {
+        gameOverText.gameObject.SetActive(true);
+        speedText.text = "0";
+        lapNumberText.text = totalLaps.ToString() + " / " + totalLaps.ToString();
     }
 }

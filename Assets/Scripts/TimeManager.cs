@@ -11,21 +11,39 @@ public class TimeManager : MonoBehaviour
     public static float LapTimeSeconds;
     public static float LapTimeMiliSeconds;
 
+    public static float TotalTimeMinutes;
+    public static float TotalTimeSeconds;
+    public static float TotalTimeMiliSeconds;
+
+    public static bool IsGameOver = false;
+
     private void Start()
     {
         IsFirstLap = true;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        LapTimeMiliSeconds++;
-
-        if (LapChange)
+        if (IsGameOver == false)
         {
-            ResetAfterLapChange();
-        }
+            LapTimeMiliSeconds++;
 
-        ValidateTimer();
+            if (LapChange)
+            {
+                UpdateTotalTime();
+                ResetAfterLapChange();
+            }
+
+            ValidateTimer();
+            ValidateLapNumber();
+        }
+    }
+
+    private void UpdateTotalTime()
+    {
+        TotalTimeMinutes += LapTimeMinutes;
+        TotalTimeSeconds += LapTimeSeconds;
+        TotalTimeMiliSeconds += LapTimeMiliSeconds;
     }
 
     private void ResetAfterLapChange()
@@ -38,6 +56,7 @@ public class TimeManager : MonoBehaviour
 
     private void ValidateTimer()
     {
+        // lap 
         if (LapTimeMiliSeconds > 59)
         {
             LapTimeMiliSeconds = 0f;
@@ -48,6 +67,28 @@ public class TimeManager : MonoBehaviour
         {
             LapTimeSeconds = 0f;
             LapTimeMinutes++;
+        }
+
+        // total
+        if (TotalTimeMiliSeconds > 59)
+        {
+            TotalTimeMiliSeconds = 0f;
+            TotalTimeSeconds++;
+        }
+
+        if (TotalTimeSeconds > 59)
+        {
+            TotalTimeSeconds = 0f;
+            TotalTimeMinutes++;
+        }
+    }
+
+    private void ValidateLapNumber()
+    {
+        if (LapNumber > TotalLapNumber)
+        {
+            LapNumber = TotalLapNumber;
+            IsGameOver = true;
         }
     }
 }

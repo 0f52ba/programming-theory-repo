@@ -43,11 +43,21 @@ public class CarController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        GetInput();
-        UpdateWheelPoses();
-        Move();
-        Steer();
-        Brake();
+        if(TimeManager.IsGameOver == false)
+        {
+            GetInput();
+            UpdateWheelPoses();
+            Move();
+            Steer();
+            Brake();
+        }
+        else
+        {
+            steerInput = 0f;
+            moveInput = 0f;
+            isBraking = true;
+            ApplyBraking();
+        }
     }
 
     private void SetCenterOfMass()

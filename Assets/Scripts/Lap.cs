@@ -9,7 +9,7 @@ public class Lap : MonoBehaviour
            other.gameObject.CompareTag(CarType.Shadow)) 
            && TimeManager.IsFirstLap)
         {
-            TimeManager.LapNumber++;
+            ValidateLapNumber();
             TimeManager.IsFirstLap = false;
         }
         else if ((other.gameObject.CompareTag(CarType.Eclipse) ||
@@ -17,8 +17,20 @@ public class Lap : MonoBehaviour
             other.gameObject.CompareTag(CarType.Shadow)) 
             && TimeManager.IsFirstLap == false)
         {
-            TimeManager.LapNumber++;
+            ValidateLapNumber();
             TimeManager.LapChange = true;
+        }
+    }
+
+    private void ValidateLapNumber()
+    {
+        if(TimeManager.LapNumber > TimeManager.TotalLapNumber)
+        {
+            TimeManager.LapNumber = TimeManager.TotalLapNumber;
+        }
+        else
+        {
+            TimeManager.LapNumber++;
         }
     }
 }
