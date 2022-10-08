@@ -21,13 +21,11 @@ public class MenuUISettings : MonoBehaviour
     public void HighScore()
     {
         PlayClickSound();
-        // TODO - load scene
     }
 
     public void Quit()
     {
         PlayClickSound();
-        // TODO - save data
 
 #if UNITY_EDITOR
         EditorApplication.ExitPlaymode();

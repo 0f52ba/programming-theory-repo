@@ -1,8 +1,13 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class RaceUISettings : MonoBehaviour
 {
+    public AudioClip clickButtonSound;
+    private AudioSource audioSource;
+
     [SerializeField] private TextMeshProUGUI speedText;
     [SerializeField] private TextMeshProUGUI lapNumberText;
     [SerializeField] private TextMeshProUGUI lapTimeMinutesText;
@@ -11,6 +16,8 @@ public class RaceUISettings : MonoBehaviour
     [SerializeField] private TextMeshProUGUI totalTimeSecondsText;
     [SerializeField] private TextMeshProUGUI gameOverText;
     [SerializeField] private int totalLaps;
+    [SerializeField] private Button restartButton;
+    [SerializeField] private Button backToMenuButton;
 
     private Rigidbody carRb;
     private float speed;
@@ -28,7 +35,10 @@ public class RaceUISettings : MonoBehaviour
         totalTimeSecondsText.text = "00";
         speedText.text = "0";
         gameOverText.gameObject.SetActive(false);
+        restartButton.gameObject.SetActive(false);
+        backToMenuButton.gameObject.SetActive(false);
 
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -44,6 +54,19 @@ public class RaceUISettings : MonoBehaviour
         {
             GameOver();
         }
+    }
+
+    public void RestartGame()
+    {
+        PlayClickSound();
+
+        SceneManager.LoadScene(2);
+    }
+
+    public void BackToMenu()
+    {
+        PlayClickSound();
+        SceneManager.LoadScene(0);
     }
 
     private void SetSpeed()
@@ -103,7 +126,14 @@ public class RaceUISettings : MonoBehaviour
     private void GameOver()
     {
         gameOverText.gameObject.SetActive(true);
+        restartButton.gameObject.SetActive(true);
+        backToMenuButton.gameObject.SetActive(true);
         speedText.text = "0";
         lapNumberText.text = totalLaps.ToString() + " / " + totalLaps.ToString();
+    }
+
+    private void PlayClickSound()
+    {
+        audioSource.PlayOneShot(clickButtonSound);
     }
 }

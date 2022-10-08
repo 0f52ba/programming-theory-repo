@@ -19,7 +19,7 @@ public class TimeManager : MonoBehaviour
 
     private void Start()
     {
-        IsFirstLap = true;
+        ResetAllData();
     }
 
     private void FixedUpdate()
@@ -52,6 +52,20 @@ public class TimeManager : MonoBehaviour
         LapTimeMinutes = 0f;
         LapTimeSeconds = 0f;
         LapTimeMiliSeconds = 0f;
+    }
+
+    private void ResetAllData()
+    {
+        LapChange = false;
+        LapTimeMinutes = 0f;
+        LapTimeSeconds = 0f;
+        LapTimeMiliSeconds = 0f;
+        TotalTimeMinutes = 0f;
+        TotalTimeSeconds = 0f;
+        TotalTimeMiliSeconds = 0f;
+        LapNumber = 0;
+        IsFirstLap = true;
+        IsGameOver = false;
     }
 
     private void ValidateTimer()
