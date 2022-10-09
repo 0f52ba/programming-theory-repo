@@ -23,6 +23,6 @@ public class PlayerManager : MonoBehaviour
     [System.Serializable]
     public class PlayerData
     {
-        public GameObject SelectedCar;
+        public GameObject Car;
     }
 }

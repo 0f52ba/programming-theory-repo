@@ -25,7 +25,7 @@ public class CameraFollowPlayerController : MonoBehaviour
 
     private void LoadCar()
     {
-        target = PlayerManager.Instance.selectedCarData.SelectedCar.transform;
+        target = PlayerManager.Instance.selectedCarData.Car.transform;
         target.position = startCarPosition;
         target.rotation = startCarRotation;
     }
