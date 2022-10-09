@@ -20,6 +20,7 @@ public class TimeManager : MonoBehaviour
     private void Start()
     {
         ResetAllData();
+        IsGameOver = false;
     }
 
     private void FixedUpdate()

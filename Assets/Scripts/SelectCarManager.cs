@@ -52,7 +52,7 @@ public class SelectCarManager : MonoBehaviour
 
     public void LoadCarData()
     {
-        ICar car;
+        Car car;
 
         switch (currentCar.tag)
         {
@@ -148,78 +148,4 @@ public class SelectCarManager : MonoBehaviour
             yield return new WaitForSeconds(rotateSeconds);
         }
     }
-}
-
-public interface ICar
-{
-    string[] AvailableColors { get; }
-    string Color { get; set; }
-    string Type { get; }
-    float Acceleration { get; }
-    float Brake { get; }
-}
-
-// 1202
-public class Eclipse : ICar
-{
-    string[] ICar.AvailableColors { get; } = new string[]
-    {
-        CarColor.Blue,
-        CarColor.White,
-        CarColor.Black
-    };
-    public string Color { get; set; }
-    string ICar.Type { get; } = CarType.Eclipse;
-    public float Acceleration { get; } = 0.73f;
-    public float Brake { get; } = 0.85f;
-}
-
-// 1203
-public class Lotus : ICar
-{
-    string[] ICar.AvailableColors { get; } = new string[]
-    {
-        CarColor.Blue,
-        CarColor.Black,
-        CarColor.Green,
-        CarColor.Yellow
-    };
-    public string Color { get; set; }
-    string ICar.Type { get; } = CarType.Lotus;
-    public float Acceleration { get; } = 0.63f;
-    public float Brake { get; } = 0.7f;
-}
-
-// ARCADE
-public class Shadow : ICar
-{
-    string[] ICar.AvailableColors { get; } = new string[]
-    {
-        CarColor.Blue,
-        CarColor.Gray,
-        CarColor.Red,
-        CarColor.Yellow
-    };
-    public string Color { get; set; }
-    string ICar.Type { get; } = CarType.Shadow;
-    public float Acceleration { get; } = 0.5f;
-    public float Brake { get; } = 0.63f;
-}
-
-public static class CarColor
-{
-    public static string Blue = "#2D52BB";
-    public static string White = "#FFFFFF";
-    public static string Black = "#000000";
-    public static string Green = "#81DD36";
-    public static string Yellow = "#FFC012";
-    public static string Gray = "#8A8A7F";
-    public static string Red = "#D10809";
-}
-
-public static class CarType
-{
-    public const string Eclipse = "Eclipse";
-    public const string Lotus = "Lotus";
-    public const string Shadow = "Shadow";
 }
